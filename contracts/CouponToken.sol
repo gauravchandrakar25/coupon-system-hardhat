@@ -27,7 +27,7 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
         name = _name;
         symbol = _symbol;
         __ERC1155_init("");
-        __Ownable_init();
+        __Ownable_init(owner());
     }
 
     function setURI(string memory newuri) public onlyOwner {
