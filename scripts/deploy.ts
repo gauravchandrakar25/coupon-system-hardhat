@@ -7,12 +7,12 @@ async function main() {
 
   const lockedAmount = parseEther("0.001");
 
-  const lock = await hre.viem.deployContract("Lock", [unlockTime], {
+  const lock = await hre.viem.deployContract("CouponToken", [unlockTime], {
     value: lockedAmount,
   });
 
   console.log(
-    `Lock with ${formatEther(
+    `CouponToken with ${formatEther(
       lockedAmount
     )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
   );
