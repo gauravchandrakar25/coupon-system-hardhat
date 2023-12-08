@@ -17,6 +17,9 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
     // Expiration time for each token (tokenId => expirationTime)
     mapping(uint256 => uint256) private _expirationTimes;
 
+    // Unique coupon code for each token (tokenId => uniqueCode)
+    mapping(uint256 => uint256) private _uniqueCodes;
+
     // Mapping to store metadata URIs for each token ID
     mapping(uint256 => string) private _tokenMetadata;
 
@@ -46,14 +49,21 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
         uint256 tokenId,
         uint256 amount,
         uint256 expirationTime,
+        uint256 uniqueCode,
         string memory metadataURI
     ) external onlyOwner {
         require(
             expirationTime == 0 || expirationTime > block.timestamp,
             "Invalid Expiration time"
         );
+
+        require(
+            uniqueCode == 0 || uniqueCode != uniqueCode,
+            "Invalid coupon code"
+        );
         _mint(account, tokenId, amount, "");
         _expirationTimes[tokenId] = expirationTime;
+        _uniqueCodes[tokenId] = uniqueCode;
         _tokenMetadata[tokenId] = metadataURI; // Set metadata URI for the token
     }
 
