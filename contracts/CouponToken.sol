@@ -124,5 +124,156 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
         super.safeTransferFrom(from, to, tokenId, amount, data);
     }
 
+    /**
+     * @dev Override the batch transfer function to check if each token is still valid (not expired).
+     * @param from The address to transfer tokens from.
+     * @param to The address to transfer tokens to.
+     * @param tokenIds An array of token IDs being transferred.
+     * @param amounts An array of amounts of tokens being transferred.
+     * @param data Additional data with no specified format.
+     */
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory tokenIds,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public virtual override {
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            require(
+                _isTokenValid(tokenIds[i]),
+                "One or more tokens have expired"
+            );
+        }
+        super.safeBatchTransferFrom(from, to, tokenIds, amounts, data);
+    }
 
+    /**
+     * @dev Allows a user to return expirable tokens to the admin.
+     *
+     * This function is used to transfer expirable tokens from a user's address to the admin's address.
+     * It checks whether the specified token has expired, and if not, the transfer is rejected.
+     *
+     * @param from The address of the user who wishes to return tokens.
+     * @param to The address of the admin who will receive the returned tokens.
+     * @param tokenId The unique identifier of the expirable token.
+     * @param amount The amount of tokens to be returned.
+     *
+     * Requirements:
+     * - The specified token (tokenId) must be expired for the transfer to proceed.
+     * - The 'to' address must match the admin's address to ensure tokens are returned to the admin only.
+     *
+     * Emits a {Transfer} event indicating the token transfer.
+     */
+    function returnExpirableTokensToAdmin(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 amount
+    ) public {
+        require(!_isTokenValid(tokenId), "Token not expired");
+        require(to == owner(), "you can only send to Admin");
+        super.safeTransferFrom(from, to, tokenId, amount, "0x00");
+    }
+
+    /**
+     * @dev Burn function for a single token and give reward to the user who burns an expired token.
+     * @param account The address of the token owner.
+     * @param id The ID of the token to burn.
+     * @param value The amount of tokens to burn.
+     */
+    function burn(address account, uint256 id, uint256 value) public virtual {
+        require(
+            account == _msgSender() || isApprovedForAll(account, _msgSender()),
+            "caller is not token owner or approved"
+        );
+        _burn(account, id, value);
+    }
+
+    /**
+     * @dev Burn function for multiple tokens and give reward to the user for burning expired tokens.
+     * @param account The address of the token owner.
+     * @param ids An array of token IDs to burn.
+     * @param values An array of amounts of tokens to burn.
+     */
+    function burnBatch(
+        address account,
+        uint256[] memory ids,
+        uint256[] memory values
+    ) public virtual {
+        require(
+            ids.length == values.length,
+            "Ids and Values length mismatched"
+        );
+        require(
+            account == _msgSender() || isApprovedForAll(account, _msgSender()),
+            "caller is not token owner or approved"
+        );
+        _burnBatch(account, ids, values);
+    }
+
+    /**
+     * @dev Sets the contract URI.
+     * @param contracturi The new contract URI to be set.
+     * Requirements:
+     * - Only the owner of the contract can call this function.
+     */
+    function setContractURI(string memory contracturi) external onlyOwner {
+        _contractURI = contracturi;
+    }
+
+    /**
+     * @dev Retrieves the contract URI.
+     * @return The current contract URI.
+     */
+    function contractURI() public view returns (string memory) {
+        return _contractURI;
+    }
+
+    function isTokenValid(uint256 tokenId) external view returns (bool) {
+        return _isTokenValid(tokenId);
+    }
+
+    /**
+     * @dev Get the expiration time of a token.
+     * @param tokenId The ID of the token to query.
+     * @return The expiration timestamp of the token.
+     */
+    function getExpirationTime(
+        uint256 tokenId
+    ) external view returns (uint256) {
+        return _expirationTimes[tokenId];
+    }
+
+    /**
+     * @dev Internal function to check if a token is still valid (not expired).
+     * @param tokenId The ID of the token to check.
+     * @return A boolean indicating whether the token is valid or not.
+     */
+    function _isTokenValid(uint256 tokenId) internal view returns (bool) {
+        return (_expirationTimes[tokenId] == 0 ||
+            block.timestamp < _expirationTimes[tokenId]);
+    }
+
+    // Receiver function for handling single transfer accepting ERC1155 token in `this` contract
+    function onERC1155Received(
+        address,
+        address,
+        uint256,
+        uint256,
+        bytes calldata
+    ) external pure returns (bytes4) {
+        return this.onERC1155Received.selector;
+    }
+
+    // Receiver function for handling multiple transfer accepting ERC1155 token in `this` contract
+    function onERC1155BatchReceived(
+        address,
+        address,
+        uint256[] calldata,
+        uint256[] calldata,
+        bytes calldata
+    ) external pure returns (bytes4) {
+        return this.onERC1155BatchReceived.selector;
+    }
 }
