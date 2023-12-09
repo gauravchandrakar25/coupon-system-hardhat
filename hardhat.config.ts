@@ -14,19 +14,23 @@ module.exports = {
     scrollSepolia: {
       url: "https://sepolia-rpc.scroll.io/" || "",
       accounts: [
-        "efa8f01063281248ad0fab29aa5a397195c1ba6fda92d423fc70bf602016ff50",
-      ],
-    },
-    scrollTestnet: {
-      url: "https://sepolia-rpc.scroll.io",
-      accounts: [
-        "efa8f01063281248ad0fab29aa5a397195c1ba6fda92d423fc70bf602016ff50",
+        "2c208f9982e1a3c8639f2f59449b4403db60d5a0495001c386ed854da7c56c82",
       ],
     },
   },
   etherscan: {
     apiKey: "6EJUM9X1Z6I8QME7E2696JTSB8RX1FA2MB",
   },
+  customChains: [
+    {
+      network: "scrollTestnet",
+      chainId: 534351,
+      urls: {
+        apiURL: "https://sepolia-rpc.scroll.io",
+        browserURL: "https://sepolia.scrollscan.com/",
+      },
+    },
+  ],
   solidity: {
     version: "0.8.20",
     settings: {
