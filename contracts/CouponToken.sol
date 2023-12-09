@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title CouponToken
  * @dev Extension of ERC1155 that introduces an expiration mechanism for ERC1155 tokens.
  */
-contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
+contract CouponToken is ERC1155, Ownable {
     string public name;
     string public symbol;
     string private _contractURI;
 
-    // Expiration time for each token (tokenId => expirationTime)s
+    // Expiration time for each token (tokenId => expirationTime)
     mapping(uint256 => uint256) private _expirationTimes;
 
     // Unique coupon code for each token (tokenId => uniqueCode)
@@ -23,16 +22,12 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
     // Mapping to store metadata URIs for each token ID
     mapping(uint256 => string) private _tokenMetadata;
 
-    function initialize(
-        string memory _name,
-        string memory _symbol
-    ) public initializer {
+    constructor(string memory _name, string memory _symbol, address initialOwner) Ownable(initialOwner) ERC1155("") {
         name = _name;
         symbol = _symbol;
-        __ERC1155_init("");
     }
 
-    function setURI(string memory newuri) public onlyOwner {
+    function setURI(string memory newuri) external onlyOwner {
         _setURI(newuri);
     }
 
