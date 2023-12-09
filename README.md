@@ -17,37 +17,19 @@ Follow these steps to set up the Coupon System on your local machine:
    npm install
    ```
 
-3. **Compile Contracts:**
+3. **Deploy Contracts:**
    ```bash
-   npx hardhat compile
-   ```
-
-4. **Run Tests:**
-   ```bash
-   npx hardhat test
+   npx hardhat run scripts/deploy.ts --network polygon_mumbai
    ```
 
 ## Usage
 
-To interact with the Coupon System, you can deploy the smart contract on a local Ethereum network or use a testnet. You can then use the provided scripts or write your own to create and redeem coupons.
-
-Example Script for Creating a Coupon:
-```bash
-npx hardhat run scripts/createCoupon.js
-```
-
-Example Script for Redeeming a Coupon:
-```bash
-npx hardhat run scripts/redeemCoupon.js
-```
+To interact with the Coupon System, you can deploy the smart contract on a local Ethereum network or use a testnet. I have used Polygon Mumbai testnet to deploy the smartcontract. You can then use the provided scripts or write your own to create and redeem coupons.
 
 ## Smart Contracts
 
-- **CouponManager.sol:**
+- **CouponToken.sol:**
   The main smart contract that manages the creation and redemption of coupons.
-
-- **Coupon.sol:**
-  Represents a coupon with details such as the discount percentage, expiration date, etc.
 
 ## Contributing
 
