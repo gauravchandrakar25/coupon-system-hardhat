@@ -46,5 +46,7 @@ Special thanks to the Hardhat development community for providing a robust Ether
 Happy coding!
 
 Deployed on Polygon Mumbai Testnet, here's the smart contract adress and the verified link on polygonscan 
+```bash
 Smart Contract Address -----> 0x0d83AD0aDb21ea8e8f336f625A9485Ad91fe5668
 Verified Contract link on Polygon Mumbai ------> https://mumbai.polygonscan.com/address/0x0d83ad0adb21ea8e8f336f625a9485ad91fe5668
+```
