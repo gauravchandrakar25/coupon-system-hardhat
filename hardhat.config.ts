@@ -1,36 +1,38 @@
+import "dotenv/config";
 require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-etherscan");
+require("@nomicfoundation/hardhat-verify");
 
 module.exports = {
   defaultNetwork: "polygon_mumbai",
+  sourcify: {
+    enabled: true,
+  },
   networks: {
-    hardhat: {},
     polygon_mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
-      accounts: [
-        "787ea5cf0dba2d628e0cdb49dc59b7e22bcc5dca5d64555917396df4180e1c64",
-      ],
+      accounts: [process.env.POLYGON_PRIVATE_KEY],
     },
     scrollSepolia: {
       url: "https://sepolia-rpc.scroll.io/" || "",
-      accounts: [
-        "2c208f9982e1a3c8639f2f59449b4403db60d5a0495001c386ed854da7c56c82",
-      ],
+      accounts: [process.env.SCROLL_PRIVATE_KEY],
     },
   },
   etherscan: {
-    apiKey: "6EJUM9X1Z6I8QME7E2696JTSB8RX1FA2MB",
-  },
-  customChains: [
-    {
-      network: "scrollTestnet",
-      chainId: 534351,
-      urls: {
-        apiURL: "https://sepolia-rpc.scroll.io",
-        browserURL: "https://sepolia.scrollscan.com/",
-      },
+    apiKey: {
+      scrollSepolia: process.env.SCROLL_API,
+      polygon_mumbai: process.env.MUMBAI_API,
     },
-  ],
+    customChains: [
+      {
+        network: "scrollSepolia",
+        chainId: 534351,
+        urls: {
+          apiURL: "https://api-sepolia.scrollscan.com/api",
+          browserURL: "https://api.sepolia.scrollscan.com/api",
+        },
+      },
+    ],
+  },
   solidity: {
     version: "0.8.20",
     settings: {
