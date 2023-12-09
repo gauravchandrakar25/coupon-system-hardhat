@@ -14,7 +14,7 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
     string public symbol;
     string private _contractURI;
 
-    // Expiration time for each token (tokenId => expirationTime)
+    // Expiration time for each token (tokenId => expirationTime)s
     mapping(uint256 => uint256) private _expirationTimes;
 
     // Unique coupon code for each token (tokenId => uniqueCode)
@@ -30,7 +30,6 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
         name = _name;
         symbol = _symbol;
         __ERC1155_init("");
-        __Ownable_init(owner());
     }
 
     function setURI(string memory newuri) public onlyOwner {
@@ -43,6 +42,7 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
      * @param tokenId, The ID of the token being minted.
      * @param amount, The amount of tokens to mint.
      * @param expirationTime, The expiration timestamp for the token.
+     * @param uniqueCode, The unique code for the token.
      */
     function mint(
         address account,
@@ -58,8 +58,7 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
         );
 
         require(
-            uniqueCode == 0 || uniqueCode != uniqueCode,
-            "Invalid coupon code"
+            uniqueCode != 0, "Invalid coupon code"
         );
         _mint(account, tokenId, amount, "");
         _expirationTimes[tokenId] = expirationTime;
@@ -97,7 +96,8 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
         address account,
         uint256[] memory tokenIds,
         uint256[] memory amounts,
-        uint256[] memory expirationTimes
+        uint256[] memory expirationTimes,
+        uint256[] memory uniqueCodes
     ) external onlyOwner {
         require(account != address(0), "mint to the zero address");
         require(
@@ -111,6 +111,15 @@ contract CouponToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable {
                 "Invalid Expiration time"
             );
             _expirationTimes[tokenIds[i]] = expirationTime;
+        }
+
+        for (uint256 i; i < tokenIds.length; i++) {
+            uint256 uniqueCode = uniqueCodes[i];
+            require(
+            uniqueCode == 0,
+            "Invalid coupon code"
+        );
+            _uniqueCodes[tokenIds[i]] = uniqueCode;
         }
         _mintBatch(account, tokenIds, amounts, "");
     }
