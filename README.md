@@ -52,3 +52,9 @@ Deployed on Polygon Mumbai Testnet, here's the smart contract adress and the ver
 Smart Contract Address ---> 0x0d83AD0aDb21ea8e8f336f625A9485Ad91fe5668
 Verified Contract link ---> https://mumbai.polygonscan.com/address/0x0d83ad0adb21ea8e8f336f625a9485ad91fe5668
 ```
+
+## Scroll Sepolia Deployment Details
+```bash
+Smart Contract Address ---> 0x44E42F166860597205aEb0605a1DB4C16658591e
+Verified Contract link ---> https://sepolia.scrollscan.com/address/0x44E42F166860597205aEb0605a1DB4C16658591e#code
+```
